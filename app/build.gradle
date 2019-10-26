@@ -9,6 +9,11 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        sourceSets {
+            main {
+                jniLibs.srcDirs = ['libs']
+            }
+        }
     }
     buildTypes {
         release {
@@ -25,4 +30,9 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    implementation files('libs\\okio-1.8.0.jar')
+    implementation files('libs\\okhttp-3.3.1.jar')
+    implementation files('libs\\gson-2.8.0.jar')
+    implementation files('libs\\XmlyOAuth2SDK_V1.8.jar')
+    implementation files('libs\\TingPhoneOpenSDK_6.1.6.jar')
 }
