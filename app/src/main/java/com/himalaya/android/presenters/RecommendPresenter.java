@@ -8,6 +8,7 @@ import com.ximalaya.ting.android.opensdk.constants.DTransferConstants;
 import com.ximalaya.ting.android.opensdk.datatrasfer.CommonRequest;
 import com.ximalaya.ting.android.opensdk.datatrasfer.IDataCallBack;
 import com.ximalaya.ting.android.opensdk.model.album.Album;
+import com.ximalaya.ting.android.opensdk.model.album.AlbumList;
 import com.ximalaya.ting.android.opensdk.model.album.GussLikeAlbumList;
 
 import java.util.ArrayList;
@@ -44,6 +45,7 @@ private List<IRecommendCallback> mCallbacks =new ArrayList<>();
     public void getRecommendList() {
 //获取推荐内容
         //封装参数
+        updateLoading();
         Map<String, String> map = new HashMap<>();
         //这个参数白哦是一页数据返回多少条
         map.put(DTransferConstants.LIKE_COUNT, Constants.RECOMMEND_COUNT+"");
@@ -62,18 +64,42 @@ private List<IRecommendCallback> mCallbacks =new ArrayList<>();
             public void onError(int i, String s) {
                 LogUtil.d(TAG,"error code -- >"+i);
                 LogUtil.d(TAG,"error massage -- > "+s);
+                handlerError();
             }
+
         });
 
     }
 
-
-    private void handlerRecommendResult(List<Album> albumList) {
-       //通知UI更新
+    private void handlerError() {
         if(mCallbacks!=null){
             for (IRecommendCallback callback : mCallbacks) {
-                callback.onRecommendListLoaded(albumList);
+                callback.onNetworkError();
             }
+        }
+    }
+
+
+    private void handlerRecommendResult(List<Album> albumList) {
+       //通知Ui更新
+        if(albumList != null){
+            if(albumList.size()==0){
+                for (IRecommendCallback callback : mCallbacks) {
+                    callback.onEmpty();
+                }
+            }else {
+                for (IRecommendCallback callback : mCallbacks) {
+                    callback.onRecommendListLoaded (albumList);
+                }
+            }
+
+        }
+
+
+    }
+    private  void updateLoading(){
+        for (IRecommendCallback callback : mCallbacks) {
+            callback.onLoading();
         }
     }
 
